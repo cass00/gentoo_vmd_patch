@@ -1,26 +1,29 @@
- plugins/Make-arch                             |   3 +-
- plugins/Makefile                              |  20 ++--
- plugins/autopsf/Makefile                      |   4 +-
- plugins/catdcd/Makefile                       |   4 +-
- plugins/cionize/Makefile                      |   4 +-
- plugins/clustalw/Makefile                     |   2 +-
- plugins/cluster/Makefile                      |   2 +-
- plugins/hesstrans/Makefile                    |   2 +-
- plugins/libbiokit/Makefile                    |  14 +--
- plugins/molfile_plugin/Makefile               | 138 +++++++++++++-------------
- plugins/molfile_plugin/src/cifplugin/Makefile |  66 ++++++------
- plugins/phylotree/Makefile                    |   2 +-
- plugins/rnaview/Makefile                      |   2 +-
- plugins/stamp/Makefile                        |   2 +-
- 14 files changed, 134 insertions(+), 131 deletions(-)
+From c33a68684cd06424ec78c6983f93336109d91cb5 Mon Sep 17 00:00:00 2001
+From: Stefan Kuczera <stefan.ku@yahoo.com>
+Date: Sat, 21 Jan 2017 13:20:45 +0100
+Subject: [PATCH] Squashed patches
+
+---
+ plugins/Make-arch               |   3 +-
+ plugins/Makefile                |  20 +++---
+ plugins/autopsf/Makefile        |   4 +-
+ plugins/catdcd/Makefile         |   4 +-
+ plugins/cionize/Makefile        |   6 +-
+ plugins/clustalw/Makefile       |   2 +-
+ plugins/cluster/Makefile        |   2 +-
+ plugins/hesstrans/Makefile      |   2 +-
+ plugins/libbiokit/Makefile      |  14 ++--
+ plugins/molfile_plugin/Makefile | 144 ++++++++++++++++++++--------------------
+ plugins/phylotree/Makefile      |   2 +-
+ plugins/rnaview/Makefile        |   2 +-
+ plugins/stamp/Makefile          |   2 +-
+ 13 files changed, 105 insertions(+), 102 deletions(-)
 
 diff --git a/plugins/Make-arch b/plugins/Make-arch
-old mode 100755
-new mode 100644
-index 9b35704..07fda20
+index 19d2b6c..937ad9e 100755
 --- a/plugins/Make-arch
 +++ b/plugins/Make-arch
-@@ -379,7 +379,8 @@ LINUX:
+@@ -313,7 +313,8 @@ LINUX:
  	"AR = ar" \
  	"NM = nm -p" \
  	"RANLIB = touch" \
@@ -31,12 +34,10 @@ index 9b35704..07fda20
  LINUXALPHA:
  	$(MAKE) dynlibs staticlibs bins \
 diff --git a/plugins/Makefile b/plugins/Makefile
-old mode 100755
-new mode 100644
-index 349345f..4006ee4
+index 0fee349..6b07606 100755
 --- a/plugins/Makefile
 +++ b/plugins/Makefile
-@@ -144,25 +144,27 @@ distrib:
+@@ -150,25 +150,27 @@ distrib:
  
  include Make-arch
  
@@ -74,7 +75,7 @@ index 349345f..4006ee4
  win32bins:
  	for dir in molfile_plugin $(BUILDDIRS); do cd $$dir && $(MAKE) win32bins && cd .. || exit 1 ; done
 diff --git a/plugins/autopsf/Makefile b/plugins/autopsf/Makefile
-index dbb0b00..d26c7a0 100644
+index 3b35d10..8e1527e 100644
 --- a/plugins/autopsf/Makefile
 +++ b/plugins/autopsf/Makefile
 @@ -49,8 +49,8 @@ AUTOPSFOBJS=${ARCHDIR}/psfatom.o  \
@@ -89,37 +90,46 @@ index dbb0b00..d26c7a0 100644
  
  ${ARCHDIR}/psfatom.o : psfatom.h psfatom.C
 diff --git a/plugins/catdcd/Makefile b/plugins/catdcd/Makefile
-index c91fedc..1b43cc0 100644
+index d6c58c5..1637a3c 100644
 --- a/plugins/catdcd/Makefile
 +++ b/plugins/catdcd/Makefile
 @@ -45,8 +45,8 @@ ${ARCHDIR}/catdcd.exe : ${CATDCDOBJS} ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfi
- 	LINK ${CATDCDOBJS} /OUT:${ARCHDIR}/catdcd.exe /LIBPATH:${COMPILEDIR}/lib_${ARCH}/molfile libmolfile_plugin.lib ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS}
+ 	LINK ${CATDCDOBJS} /OUT:${ARCHDIR}/catdcd.exe /LIBPATH:${COMPILEDIR}/lib_${ARCH}/molfile libmolfile_plugin.lib ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS}
  
  # all other platforms
 -${ARCHDIR}/catdcd : ${CATDCDOBJS} ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.a
--	${CXX} ${CXXFLAGS} ${CATDCDOBJS} -o ${ARCHDIR}/catdcd -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} -lm
+-	${CXX} ${CXXFLAGS} ${CATDCDOBJS} -o ${ARCHDIR}/catdcd -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS} -lm
 +${ARCHDIR}/catdcd : ${CATDCDOBJS} ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.a ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.h
-+	${CXX} ${LDFLAGS} ${CXXFLAGS} ${CATDCDOBJS} -o ${ARCHDIR}/catdcd -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} -lm
++	${CXX} ${LDFLAGS} ${CXXFLAGS} ${CATDCDOBJS} -o ${ARCHDIR}/catdcd -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS} -lm
  
  ${ARCHDIR}/hash.o: hash.h hash.c
  	${CXX} ${CXXFLAGS} ${INCDIR} -c ${SRCDIR}/hash.c $(COPTO)${ARCHDIR}/hash.o
 diff --git a/plugins/cionize/Makefile b/plugins/cionize/Makefile
-index c5fe136..5e9a379 100644
+index bcb2510..e02241b 100644
 --- a/plugins/cionize/Makefile
 +++ b/plugins/cionize/Makefile
 @@ -52,8 +52,8 @@ ${ARCHDIR}/cionize.exe : ${IONIZEOBJS} ${MGPOTOBJS} ${ARCHDIR}/cionize.o ${COMPI
- 	LINK ${IONIZEOBJS} ${MGPOTOBJS} /OUT:${ARCHDIR}/cionize.exe /LIBPATH:${COMPILEDIR}/lib_${ARCH}/molfile libmolfile_plugin.lib ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS}
+ 	LINK ${IONIZEOBJS} ${MGPOTOBJS} /OUT:${ARCHDIR}/cionize.exe /LIBPATH:${COMPILEDIR}/lib_${ARCH}/molfile libmolfile_plugin.lib ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS}
  
  # all other platforms
 -${ARCHDIR}/cionize: ${IONIZEOBJS} ${MGPOTOBJS} ${ARCHDIR}/cionize.o ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.a
--	${CXX} ${CXXFLAGS} ${ARCHDIR}/cionize.o ${IONIZEOBJS} ${MGPOTOBJS} -o ${ARCHDIR}/cionize -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} -lm
-+${ARCHDIR}/cionize: ${IONIZEOBJS} ${MGPOTOBJS} ${ARCHDIR}/cionize.o ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.a ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.h
-+	${CXX} ${LDFLAGS} ${CXXFLAGS} ${ARCHDIR}/cionize.o ${IONIZEOBJS} ${MGPOTOBJS} -o ${ARCHDIR}/cionize -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} -lm
+-	${CXX} ${CXXFLAGS} ${ARCHDIR}/cionize.o ${IONIZEOBJS} ${MGPOTOBJS} -o ${ARCHDIR}/cionize -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS} -lm
++${ARCHDIR}/cionize: ${IONIZEOBJS} ${MGPOTOBJS} ${ARCHDIR}/cionize.o ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.a  ${COMPILEDIR}/lib_${ARCH}/molfile/libmolfile_plugin.h
++	${CXX} ${LDFLAGS} ${CXXFLAGS} ${ARCHDIR}/cionize.o ${IONIZEOBJS} ${MGPOTOBJS} -o ${ARCHDIR}/cionize -L${COMPILEDIR}/lib_${ARCH}/molfile -lmolfile_plugin ${TCLLIB} ${TCLLDFLAGS} ${NETCDFLIB} ${NETCDFLDFLAGS} ${EXPATLIB} ${EXPATLDFLAGS} ${SQLITELIB} ${SQLITELDFLAGS} -lm
  
  ${ARCHDIR}/hash.o: hash.h hash.c
  	${CC}  ${CCFLAGS} ${INCDIR} -c ${SRCDIR}/hash.c $(COPTO)${ARCHDIR}/hash.o
+@@ -66,7 +66,7 @@ ${ARCHDIR}/util.o: util.h util.c
+ 
+ ${ARCHDIR}/getplugins.o: getplugins.h getplugins.c
+ 	${CC}  ${CCFLAGS} ${INCDIR} -c ${SRCDIR}/getplugins.c $(COPTO)${ARCHDIR}/getplugins.o
+-	
++
+ ${ARCHDIR}/energythr.o: energythr.h energythr.c ${ARCHDIR}/util.o ${ARCHDIR}/threads.o
+ 	${CC}  ${CCFLAGS} ${INCDIR} -c ${SRCDIR}/energythr.c $(COPTO)${ARCHDIR}/energythr.o
+ 
 diff --git a/plugins/clustalw/Makefile b/plugins/clustalw/Makefile
-index b8fbba5..988ad06 100644
+index 6329f64..3443720 100644
 --- a/plugins/clustalw/Makefile
 +++ b/plugins/clustalw/Makefile
 @@ -66,7 +66,7 @@ OBJS = ${ARCHDIR}/alnscore.o \
@@ -225,7 +235,7 @@ index 7a66d08..da764dd 100644
  	${CXX} ${CXXFLAGS} ${INCDIR} -c ${UTILSRCDIR}/structqr.cpp $(COPTO)${ARCHDIR}/structqr.o
      
 diff --git a/plugins/molfile_plugin/Makefile b/plugins/molfile_plugin/Makefile
-index 2eb41a3..0d3f5d2 100644
+index 4c47615..1c77ddf 100644
 --- a/plugins/molfile_plugin/Makefile
 +++ b/plugins/molfile_plugin/Makefile
 @@ -15,7 +15,7 @@ INCDIR = -I../include -I${SRCDIR}
@@ -237,7 +247,7 @@ index 2eb41a3..0d3f5d2 100644
  
  #
  # Rules
-@@ -168,194 +168,194 @@ mesg:
+@@ -168,203 +168,203 @@ mesg:
  #
  
  abinitplugin.so: ${ARCHDIR}/abinitplugin.o 
@@ -394,11 +404,19 @@ index 2eb41a3..0d3f5d2 100644
 -	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
 +	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
  
+ pdbxplugin.so: ${ARCHDIR}/pdbxplugin.o 
+-	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
++	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
+ 
  phiplugin.so: ${ARCHDIR}/phiplugin.o 
 -	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
 +	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
  
  pltplugin.so: ${ARCHDIR}/pltplugin.o
+-	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
++	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
+ 
+ plyplugin.so: ${ARCHDIR}/plyplugin.o 
 -	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
 +	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
  
@@ -466,6 +484,10 @@ index 2eb41a3..0d3f5d2 100644
 -	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
 +	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
  
+ vtkplugin.so: ${ARCHDIR}/vtkplugin.o 
+-	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
++	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
+ 
  xbgfplugin.so: ${ARCHDIR}/xbgfplugin.o 
 -	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
 +	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
@@ -492,7 +514,7 @@ index 2eb41a3..0d3f5d2 100644
  
  
  ##
-@@ -363,28 +363,28 @@ gaussianplugin.so: ${ARCHDIR}/gaussianplugin.o
+@@ -372,28 +372,28 @@ gaussianplugin.so: ${ARCHDIR}/gaussianplugin.o
  ## dependencies of some kind
  ##
  hoomdplugin.so: ${ARCHDIR}/hoomdplugin.o
@@ -529,182 +551,6 @@ index 2eb41a3..0d3f5d2 100644
  
  
  #
-diff --git a/plugins/molfile_plugin/src/cifplugin/Makefile b/plugins/molfile_plugin/src/cifplugin/Makefile
-index 1dfa768..bd6eceb 100644
---- a/plugins/molfile_plugin/src/cifplugin/Makefile
-+++ b/plugins/molfile_plugin/src/cifplugin/Makefile
-@@ -13,8 +13,8 @@ INCDIR = -I../include -I${SRCDIR}
- 
- VPATH = src ../include ${ARCHDIR}
- 
--SCCFLAGS = $(CCFLAGS) $(DEF)"STATIC_PLUGIN"
--SCXXFLAGS = $(CCFLAGS) $(DEF)"STATIC_PLUGIN"
-+SCCFLAGS = $(CFLAGS) $(DEF)"STATIC_PLUGIN"
-+SCXXFLAGS = $(CXXFLAGS) $(DEF)"STATIC_PLUGIN"
- 
- #
- # Rules
-@@ -84,10 +84,10 @@ mesg:
- #
- 
- biomoccaplugin.so: ${ARCHDIR}/biomoccaplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- cifplugin.so: ${ARCHDIR}/cifplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- cpmdplugin.so: ${ARCHDIR}/cpmdplugin.o 
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-@@ -105,10 +105,10 @@ babelplugin.so: ${ARCHDIR}/babelplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- gromacsplugin.so: ${ARCHDIR}/gromacsplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- parmplugin.so: ${ARCHDIR}/parmplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- netcdfplugin.so: ${ARCHDIR}/netcdfplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(NETCDFLIB) $(NETCDFLDFLAGS) $(LDFLAGS)
-@@ -126,40 +126,40 @@ webpdbplugin.so: ${ARCHDIR}/webpdbplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(TCLLIB) $(TCLLDFLAGS) $(LDFLAGS)
- 
- graspplugin.so: ${ARCHDIR}/graspplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- msmsplugin.so: ${ARCHDIR}/msmsplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- stlplugin.so: ${ARCHDIR}/stlplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- cubeplugin.so: ${ARCHDIR}/cubeplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- edmplugin.so: ${ARCHDIR}/edmplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- ccp4plugin.so: ${ARCHDIR}/ccp4plugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- dsn6plugin.so: ${ARCHDIR}/dsn6plugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- brixplugin.so: ${ARCHDIR}/brixplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- pltplugin.so: ${ARCHDIR}/pltplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- raster3dplugin.so: ${ARCHDIR}/raster3dplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- rst7plugin.so: ${ARCHDIR}/rst7plugin.o 
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- parm7plugin.so: ${ARCHDIR}/parm7plugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- vtfplugin.so: ${ARCHDIR}/vtfplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-@@ -174,7 +174,7 @@ tinkerplugin.so: ${ARCHDIR}/tinkerplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- uhbdplugin.so: ${ARCHDIR}/uhbdplugin.o
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- vaspchgcarplugin.so: ${ARCHDIR}/vaspchgcarplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-@@ -201,58 +201,58 @@ moldenplugin.so: ${ARCHDIR}/moldenplugin.o
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- phiplugin.so: ${ARCHDIR}/phiplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- pbeqplugin.so: ${ARCHDIR}/pbeqplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- grdplugin.so: ${ARCHDIR}/grdplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- dxplugin.so: ${ARCHDIR}/dxplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- situsplugin.so: ${ARCHDIR}/situsplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- spiderplugin.so: ${ARCHDIR}/spiderplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- mapplugin.so: ${ARCHDIR}/mapplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- avsplugin.so: ${ARCHDIR}/avsplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- fs4plugin.so: ${ARCHDIR}/fs4plugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- pqrplugin.so: ${ARCHDIR}/pqrplugin.o 
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- mol2plugin.so: ${ARCHDIR}/mol2plugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- bgfplugin.so: ${ARCHDIR}/bgfplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- xbgfplugin.so: ${ARCHDIR}/xbgfplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- gridplugin.so: ${ARCHDIR}/gridplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- carplugin.so: ${ARCHDIR}/carplugin.o 
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- mdfplugin.so: ${ARCHDIR}/mdfplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- gamessplugin.so: ${ARCHDIR}/gamessplugin.o 
- 	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- xsfplugin.so: ${ARCHDIR}/xsfplugin.o 
--	$(SHLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
-+	$(SHXXLD) $(LOPTO)${ARCHDIR}/$@ $? $(LDFLAGS)
- 
- #
- # object files
 diff --git a/plugins/phylotree/Makefile b/plugins/phylotree/Makefile
 index 6442747..0aceb4d 100644
 --- a/plugins/phylotree/Makefile
@@ -744,3 +590,6 @@ index f0fb515..aa8f6b6 100644
      
      
  # Objects.
+-- 
+2.5.5
+
